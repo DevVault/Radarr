@@ -18,7 +18,7 @@ interface CssExports {
   'originalTitle': string;
   'path': string;
   'physicalRelease': string;
-  'qualityProfileId': string;
+  'qualityProfileIds': string;
   'rottenTomatoesRating': string;
   'runtime': string;
   'sizeOnDisk': string;

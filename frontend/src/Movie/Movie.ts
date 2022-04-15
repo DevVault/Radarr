@@ -35,6 +35,7 @@ interface Movie extends ModelBase {
   titleSlug: string;
   collection: Collection;
   studio: string;
+  qualityProfileIds: number[];
   qualityProfile: object;
   added: string;
   year: number;

@@ -6,6 +6,7 @@ import Icon from 'Components/Icon';
 import ImdbRating from 'Components/ImdbRating';
 import IconButton from 'Components/Link/IconButton';
 import SpinnerIconButton from 'Components/Link/SpinnerIconButton';
+import QualityProfileListConnector from 'Components/QualityProfileListConnector';
 import RottenTomatoRating from 'Components/RottenTomatoRating';
 import RelativeDateCellConnector from 'Components/Table/Cells/RelativeDateCellConnector';
 import VirtualTableRowCell from 'Components/Table/Cells/VirtualTableRowCell';
@@ -42,8 +43,9 @@ interface MovieIndexRowProps {
 function MovieIndexRow(props: MovieIndexRowProps) {
   const { movieId, columns, isSelectMode } = props;
 
-  const { movie, qualityProfile, isRefreshingMovie, isSearchingMovie } =
-    useSelector(createMovieIndexItemSelector(props.movieId));
+  const { movie, isRefreshingMovie, isSearchingMovie } = useSelector(
+    createMovieIndexItemSelector(props.movieId)
+  );
 
   const { showSearchAction } = useSelector(selectTableOptions);
 
@@ -65,6 +67,7 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     physicalRelease,
     runtime,
     minimumAvailability,
+    qualityProfileIds,
     path,
     sizeOnDisk,
     genres = [],
@@ -205,10 +208,12 @@ function MovieIndexRow(props: MovieIndexRowProps) {
           );
         }
 
-        if (name === 'qualityProfileId') {
+        if (name === 'qualityProfileIds') {
           return (
             <VirtualTableRowCell key={name} className={styles[name]}>
-              {qualityProfile.name}
+              <QualityProfileListConnector
+                qualityProfileIds={qualityProfileIds}
+              />
             </VirtualTableRowCell>
           );
         }
