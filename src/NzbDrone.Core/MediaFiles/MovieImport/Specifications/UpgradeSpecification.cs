@@ -53,6 +53,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
         private Decision Calculate(Profile profile, LocalMovie localMovie, MovieFile file, List<CustomFormat> currentFormats, ProperDownloadTypes downloadPropersAndRepacks)
         {
             var qualityComparer = new QualityModelComparer(profile);
+            var profileId = profile.Id;
 
             // Check to see if the existing file is valid for this profile. if not, don't count against this release
             var qualityIndex = profile.GetIndex(file.Quality.Quality);
@@ -60,7 +61,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
 
             if (!qualityOrGroup.Allowed)
             {
-                return Decision.Accept();
+                return Decision.Reject("Quality not wanted in Profile", profileId);
             }
 
             var movieFile = file;
@@ -76,7 +77,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
             if (qualityCompare < 0)
             {
                 _logger.Debug("This file isn't a quality upgrade for movie. New Quality is {0}. Skipping {1}", localMovie.Quality.Quality, localMovie.Path);
-                return Decision.Reject(string.Format("Not an upgrade for existing movie file. New Quality is {0}", localMovie.Quality.Quality));
+                return Decision.Reject($"Not an upgrade for existing movie file. New Quality is {localMovie.Quality.Quality}", profileId);
             }
 
             // Same quality, propers/repacks are preferred and it is not a revision update. Reject revision downgrade.
@@ -86,7 +87,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
                 localMovie.Quality.Revision.CompareTo(movieFile.Quality.Revision) < 0)
             {
                 _logger.Debug("This file isn't a quality revision upgrade for movie. Skipping {0}", localMovie.Path);
-                return Decision.Reject("Not a quality revision upgrade for existing movie file(s)");
+                return Decision.Reject("Not a quality revision upgrade for existing movie file(s)", profileId);
             }
 
             var currentScore = profile.CalculateCustomFormatScore(currentFormats);
@@ -97,7 +98,7 @@ namespace NzbDrone.Core.MediaFiles.MovieImport.Specifications
                     localMovie.CustomFormats.ConcatToString(),
                     currentFormats.ConcatToString());
 
-                return Decision.Reject("Not a Custom Format upgrade for existing movie file(s)");
+                return Decision.Reject("Not a Custom Format upgrade for existing movie file(s)", profileId);
             }
 
             return Decision.Accept();
