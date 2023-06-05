@@ -20,6 +20,7 @@ import DeleteMovieModal from 'Movie/Delete/DeleteMovieModal';
 import MovieDetailsLinks from 'Movie/Details/MovieDetailsLinks';
 import EditMovieModalConnector from 'Movie/Edit/EditMovieModalConnector';
 import createMovieIndexItemSelector from 'Movie/Index/createMovieIndexItemSelector';
+import { Statistics } from 'Movie/Movie';
 import MovieTitleLink from 'Movie/MovieTitleLink';
 import { executeCommand } from 'Store/Actions/commandActions';
 import createUISettingsSelector from 'Store/Selectors/createUISettingsSelector';
@@ -69,7 +70,6 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     minimumAvailability,
     qualityProfileIds,
     path,
-    sizeOnDisk,
     genres = [],
     ratings,
     certification,
@@ -77,11 +77,12 @@ function MovieIndexRow(props: MovieIndexRowProps) {
     tmdbId,
     imdbId,
     isAvailable,
-    hasFile,
-    movieFile,
+    statistics = {} as Statistics,
     youTubeTrailerId,
     isSaving = false,
   } = movie;
+
+  const { movieFileCount, sizeOnDisk } = statistics;
 
   const dispatch = useDispatch();
   const [isEditMovieModalOpen, setIsEditMovieModalOpen] = useState(false);
@@ -329,9 +330,8 @@ function MovieIndexRow(props: MovieIndexRowProps) {
             <VirtualTableRowCell key={name} className={styles[name]}>
               <MovieIndexProgressBar
                 movieId={movieId}
-                movieFile={movieFile}
+                movieFileCount={movieFileCount}
                 monitored={monitored}
-                hasFile={hasFile}
                 isAvailable={isAvailable}
                 status={status}
                 width={125}

@@ -1,5 +1,4 @@
 import ModelBase from 'App/ModelBase';
-import { MovieFile } from 'MovieFile/MovieFile';
 
 export interface Image {
   coverType: string;
@@ -21,6 +20,12 @@ export interface Ratings {
   tmdb: object;
   metacritic: object;
   rottenTomatoes: object;
+}
+
+export interface Statistics {
+  movieFileCount: number;
+  releaseGroups: string[];
+  sizeOnDisk: number;
 }
 
 interface Movie extends ModelBase {
@@ -47,14 +52,12 @@ interface Movie extends ModelBase {
   runtime: number;
   minimumAvailability: string;
   path: string;
-  sizeOnDisk: number;
   genres: string[];
   ratings: Ratings;
   certification: string;
   tags: number[];
   images: Image[];
-  movieFile: MovieFile;
-  hasFile: boolean;
+  statistics: Statistics;
   isAvailable: boolean;
   isSaving?: boolean;
 }
